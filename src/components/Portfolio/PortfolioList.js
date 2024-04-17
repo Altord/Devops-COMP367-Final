@@ -19,7 +19,6 @@ function PortfolioList({ theme }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPortfolio, setSelectedPortfolio] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0); 
 
   useEffect(() => {
     localStorage.setItem('portfolios', JSON.stringify(portfolios));
@@ -48,13 +47,11 @@ function PortfolioList({ theme }) {
     thumbnail: portfolio.image,
     description: portfolio.description,
     renderItem: () => (
-      <div onClick={() => openModal(portfolio)}>
+      <div onClick={() => openModal(portfolio)} style={{ cursor: 'pointer' }}>
         <img src={portfolio.image} alt={portfolio.title} />
-        {portfolio.description && (
-          <span className="image-gallery-description" style={{ color: theme.color }}>
-            {portfolio.description}
-          </span>
-        )}
+        <div style={{ color: theme.color }}>
+          {portfolio.description}
+        </div>
       </div>
     )
   }));
@@ -62,50 +59,14 @@ function PortfolioList({ theme }) {
   return (
     <>
       <form onSubmit={addPortfolio} style={formStyle(theme)}>
-        <input
-          type="text"
-          placeholder="Title"
-          value={newPortfolio.title}
-          onChange={(e) => setNewPortfolio({ ...newPortfolio, title: e.target.value })}
-          required
-          style={inputStyle(theme)}
-        />
-        <input
-          type="text"
-          placeholder="Description"
-          value={newPortfolio.description}
-          onChange={(e) => setNewPortfolio({ ...newPortfolio, description: e.target.value })}
-          required
-          style={inputStyle(theme)}
-        />
-        <input
-          type="url"
-          placeholder="Image URL"
-          value={newPortfolio.image}
-          onChange={(e) => setNewPortfolio({ ...newPortfolio, image: e.target.value })}
-          required
-          style={inputStyle(theme)}
-        />
-        <input
-          type="url"
-          placeholder="Project Link"
-          value={newPortfolio.link}
-          onChange={(e) => setNewPortfolio({ ...newPortfolio, link: e.target.value })}
-          required
-          style={inputStyle(theme)}
-        />
+        <input type="text" placeholder="Title" value={newPortfolio.title} onChange={(e) => setNewPortfolio({ ...newPortfolio, title: e.target.value })} required style={inputStyle(theme)} />
+        <input type="text" placeholder="Description" value={newPortfolio.description} onChange={(e) => setNewPortfolio({ ...newPortfolio, description: e.target.value })} required style={inputStyle(theme)} />
+        <input type="url" placeholder="Image URL" value={newPortfolio.image} onChange={(e) => setNewPortfolio({ ...newPortfolio, image: e.target.value })} required style={inputStyle(theme)} />
+        <input type="url" placeholder="Project Link" value={newPortfolio.link} onChange={(e) => setNewPortfolio({ ...newPortfolio, link: e.target.value })} required style={inputStyle(theme)} />
         <button type="submit" style={buttonStyle(theme)}>Add Portfolio Item</button>
       </form>
       {portfolios.length > 0 && (
-        <ImageGallery
-          items={galleryImages}
-          startIndex={currentIndex} 
-          onSlide={setCurrentIndex} 
-          showThumbnails={false}
-          showPlayButton={false}
-          showFullscreenButton={false}
-          additionalClass="custom-gallery"
-        />
+        <ImageGallery items={galleryImages} showThumbnails={false} showPlayButton={false} showFullscreenButton={false} additionalClass="custom-gallery" />
       )}
       {isModalOpen && selectedPortfolio && (
         <Modal portfolio={selectedPortfolio} onClose={closeModal} theme={theme} />
@@ -130,6 +91,8 @@ function inputStyle(theme) {
   return {
     padding: '10px',
     margin: '0 5px',
+    width: 'calc(100% - 10px)', // ensure inputs do not overflow their container
+    boxSizing: 'border-box', // include padding and border in the element's total width and height
     ...theme.inputStyle,
   };
 }
